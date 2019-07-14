@@ -3,8 +3,10 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "react-native start",
-    "android": "react-native run-android",
+    "start": "yarn install && yarn base && react-native start",
+    "dev": "yarn install && react-native start",
+    "base": "react-native run-android",
+    "log": "react-native log-android",
     "test": "jest",
     "lint": "eslint ."
   },
@@ -14,6 +16,8 @@
     "react-native-svg": "^9.5.1"
   },
   "devDependencies": {
+    "@types/react": "^16.8.23",
+    "@types/react-native": "^0.60.0",
     "@babel/core": "^7.5.4",
     "@babel/runtime": "^7.5.4",
     "@react-native-community/eslint-config": "^0.0.5",
@@ -21,7 +25,9 @@
     "eslint": "^6.0.1",
     "jest": "^24.8.0",
     "metro-react-native-babel-preset": "^0.55.0",
-    "react-test-renderer": "16.8.6"
+    "react-test-renderer": "16.8.6",
+    "react-native-typescript-transformer": "^1.2.12",
+    "typescript": "^3.5.3"
   },
   "jest": {
     "preset": "react-native"
