@@ -16,8 +16,6 @@ export default class API {
             'strokes': strokes.map((x: IShape, index: number) => {
                 const line = x.line.substring(1).trim().replace(/[^0-9]+/g, ",");
 
-                console.log(" id", id + index)
-
                 return {
                     'id': id + index,
                     'points': line
@@ -29,7 +27,12 @@ export default class API {
     public sendData(data: IShape[], id: number) {
         this.fetch(data, id).then(data => {
             if (data.recognitionUnits) {
-                this.onResult(data.recognitionUnits[0])
+
+                if (data.recognitionUnits[0]) {
+                    this.onResult(data.recognitionUnits[0])
+                }
+
+                //sometimes an empty result gets parsed back
             } else {
                 this.onError(data)
             }
@@ -40,7 +43,7 @@ export default class API {
     private fetch(data: IShape[], id: number) {
         const postData = this.buildBody(data, id);
 
-        const SUBSCRIPTION_KEY = 'f5555760e9094461a08c7dfcf1d9d4e6';
+        const SUBSCRIPTION_KEY = '7f8cc438a1524b2f826b5e3fb9824633';
 
         return fetch('https://api.cognitive.microsoft.com/inkrecognizer/v1.0-preview/recognize', {
             method: 'PUT',

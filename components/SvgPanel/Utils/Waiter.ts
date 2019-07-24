@@ -5,7 +5,6 @@ export default class Waiter {
     private defaultWaitingTime: number;
     private onCountDownReached: () => void;
 
-
     constructor(onCountDownReached: () => void, waitingTime: number) {
         this.onCountDownReached = onCountDownReached;
         this.defaultWaitingTime = waitingTime;
@@ -25,9 +24,9 @@ export default class Waiter {
     }
 
     private loop() {
-        // console.log("loop/wait",)
+        console.log("loop/wait",)
         if (this.checkIfTimeParsed()) {
-            // console.log("submit",)
+            console.log("submit",)
             this.onCountDownReached();
             this.loopRunning = false;
         } else {

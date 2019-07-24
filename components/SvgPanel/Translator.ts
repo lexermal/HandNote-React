@@ -30,7 +30,7 @@ export default class Translator {
         this.waiter.startCountDown();
     }
 
-    private submitShapes() {
+    public submitShapes() {
         const id = Utils.getUnusedId((id: number) => this.datastore.translationExists(id));
         this.datastore.addShapeTranslation(id, this.shapes);
 
@@ -48,9 +48,9 @@ export default class Translator {
     }
 
     private onError(e: any) {
-        console.error(e);
+        console.log(e);
 
-        ToastAndroid.show(e, ToastAndroid.SHORT);
+        ToastAndroid.show(e.error.message, ToastAndroid.SHORT);
     }
 
     private transformText(data: any): IText {
