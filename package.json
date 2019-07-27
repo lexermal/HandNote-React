@@ -7,6 +7,7 @@
     "dev": "yarn install && react-native start",
     "base": "react-native run-android",
     "log": "react-native log-android",
+    "build": "cd android &&./gradlew assembleRelease",
     "test": "jest",
     "lint": "eslint ."
   },

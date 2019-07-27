@@ -1,10 +1,10 @@
-import Waiter from "./Utils/Waiter";
+import Waiter from "../../services/Utils/Waiter";
 import {IShape} from "./ShapeHandler";
-import {ILine} from "./Beans/Line";
-import Utils from "./Utils/Utils";
-import Drawing from "./Beans/Drawing";
-import API from "./API";
-import Datastore from "./Datastore";
+import {ILine} from "../../services/Beans/Line";
+import Utils from "../../services/Utils/Utils";
+import Drawing from "../../services/Beans/Drawing";
+import API from "../../services/API";
+import Datastore from "../../services/Datastore";
 import {ToastAndroid} from "react-native";
 
 export default class Translator {

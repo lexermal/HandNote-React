@@ -1,9 +1,10 @@
-import {IShape} from "./ShapeHandler";
+import {IShape} from "../components/SvgPanel/ShapeHandler";
 
 export default class API {
-    private language = "en-US";
+    private language = "de";
     private onError: (data: any) => void;
     private onResult: (data: any) => void;
+    private SUBSCRIPTION_KEY = '7f8cc438a1524b2f826b5e3fb9824633';
 
     constructor(onResult: (data: any) => void, onError: (data: any) => void) {
         this.onError = onError;
@@ -43,13 +44,12 @@ export default class API {
     private fetch(data: IShape[], id: number) {
         const postData = this.buildBody(data, id);
 
-        const SUBSCRIPTION_KEY = '7f8cc438a1524b2f826b5e3fb9824633';
 
         return fetch('https://api.cognitive.microsoft.com/inkrecognizer/v1.0-preview/recognize', {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
-                'Ocp-Apim-Subscription-Key': SUBSCRIPTION_KEY,
+                'Ocp-Apim-Subscription-Key': this.SUBSCRIPTION_KEY,
             },
             body: JSON.stringify(postData),
         }).then(response => response.json());

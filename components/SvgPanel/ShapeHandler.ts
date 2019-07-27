@@ -1,10 +1,11 @@
-import Shape from "./Beans/Shape";
-import Utils from "./Utils/Utils";
-import Datastore from "./Datastore";
-import Drawing from "./Beans/Drawing";
+import Shape from "../../services/Beans/Shape";
+import Utils from "../../services/Utils/Utils";
+import Datastore from "../../services/Datastore";
+import Drawing from "../../services/Beans/Drawing";
 import Translator, {IText} from "./Translator";
 
 export default class ShapeHandler {
+    private defaultSpace = 20;
     private translator: Translator;
     private datastore = new Datastore();
     private activeShape: Shape | undefined;
@@ -22,6 +23,12 @@ export default class ShapeHandler {
     }
 
     public async start(x: number, y: number) {
+
+        if (this.datastore.shapes.length > 0 && this.activeShape && this.checkIfNewShape(x, y, this.activeShape.getShape())) {
+            console.log("New Shape, submit old");
+            this.translator.submitShapes();
+        }
+
         this.activeShape = new Shape(x, y, Utils.getUnusedId((id: number) => this.checkFound(id)));
     }
 
@@ -36,6 +43,27 @@ export default class ShapeHandler {
 
     public getActiveShape() {
         return this.activeShape!.getShapeLines();
+    }
+
+    private checkIfNewShape(x: number, y: number, activeShape: IShape): boolean {
+        const box = activeShape.dimensions;
+
+        const vertical = this.isVerticalOutside(box.top, box.bottom, y);
+        const horizontal = this.isHorzontalOutside(box.left, box.right, x);
+
+        // console.log("[ShapeHandler] vertical outside", vertical)
+        // console.log("[ShapeHandler] horizontal outside",horizontal )
+
+        return vertical || horizontal;
+    }
+
+    private isHorzontalOutside(left: number, right: number, newX: number) {
+        return (right + this.defaultSpace < newX) || (left - this.defaultSpace > newX);
+    }
+
+    private isVerticalOutside(top: number, bottom: number, newY: number) {
+        //old shape above or shape underneath
+        return (bottom + this.defaultSpace < newY) || (top - this.defaultSpace > newY);
     }
 
     private checkFound(id: number): boolean {

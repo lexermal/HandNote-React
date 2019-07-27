@@ -3,9 +3,9 @@ import React from 'react';
 import {GestureResponderEvent, StyleSheet, View} from 'react-native';
 import ShapeHandler from "./ShapeHandler";
 import {IText} from "./Translator";
-import Drawing from "./Beans/Drawing";
-import {ILine} from "./Beans/Line";
-import Utils from "./Utils/Utils";
+import Drawing from "../../services/Beans/Drawing";
+import {ILine} from "../../services/Beans/Line";
+import Utils from "../../services/Utils/Utils";
 
 export default class SvgPanel extends React.Component<{}, State> {
     private shapes: ShapeHandler;
@@ -50,7 +50,7 @@ export default class SvgPanel extends React.Component<{}, State> {
             }
             {
                 this.state.texts.map((x: IText) => {
-                    return <Text fill="none" stroke="purple" fontSize="20" key={x.id}
+                    return <Text fill="none" stroke="purple" fontSize="40" key={x.id}
                                  fontWeight="bold" x={x.dimensions.left} y={x.dimensions.top} textAnchor="middle">{x.text}</Text>
                 })
             }

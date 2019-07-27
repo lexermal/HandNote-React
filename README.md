@@ -2,8 +2,7 @@
 
 ## Todo
 * texte auf richtiger linie platzieren
-* Wennn etwas gezeichnet wird und man schriebt innerhalb des wortes was anderes wird das erste submittet, siehe resultat beim schreiben von "hate oder this"
-* 
+* don't submit shapes when array is empty
 
 
 Schlüssel 1: 7f8cc438a1524b2f826b5e3fb9824633

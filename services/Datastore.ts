@@ -1,6 +1,6 @@
 import Drawing from "./Beans/Drawing";
-import {IShape} from "./ShapeHandler";
-import {IText} from "./Translator";
+import {IShape} from "../components/SvgPanel/ShapeHandler";
+import {IText} from "../components/SvgPanel/Translator";
 
 export default class Datastore {
     private _texts = [] as IText[];
