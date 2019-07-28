@@ -1,6 +1,8 @@
 export default class Waiter {
 
+    private loopTime = 500;
     private loopRunning = false;
+    private countDownStop = false;
     private startTime = new Date();
     private defaultWaitingTime: number;
     private onCountDownReached: () => void;
@@ -23,14 +25,23 @@ export default class Waiter {
         }
     }
 
+    public stopCountDown() {
+        this.countDownStop = true;
+    }
+
     private loop() {
-        console.log("loop/wait",)
-        if (this.checkIfTimeParsed()) {
-            console.log("submit",)
+        console.log("wait",);
+        if (this.countDownStop) {
+            this.loopRunning = false;
+            this.countDownStop = false;
+            console.log("stop",)
+
+        } else if (this.checkIfTimeParsed()) {
+            console.log("submit",);
             this.onCountDownReached();
             this.loopRunning = false;
         } else {
-            setTimeout(() => this.loop(), 1000)
+            setTimeout(() => this.loop(), this.loopTime)
         }
     }
 

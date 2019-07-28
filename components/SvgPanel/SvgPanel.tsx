@@ -16,7 +16,19 @@ export default class SvgPanel extends React.Component<{}, State> {
 
         this.shapes = new ShapeHandler(this.onApiResult);
 
-        this.state = {lines: [], activeLine: "", texts: [], drawings: []};
+        this.state = {lines: [], activeLine: "", texts: [], drawings: [], width: 0};
+    }
+
+    public componentDidMount(): void {
+        this.setState({width: Utils.getWidth()})
+    }
+
+    public componentDidUpdate(): void {
+        const width = Utils.getWidth();
+
+        if (this.state.width !== width) {
+            this.setState({width})
+        }
     }
 
     private touchEnded() {
@@ -38,26 +50,27 @@ export default class SvgPanel extends React.Component<{}, State> {
     }
 
     private renderSVG() {
-        const width = Utils.getWidth();
-
         return <Svg height="100%" width="100%" style={{backgroundColor: "orange"}}>
             {
                 this.state.lines.map((line: string) => <Path key={line} d={line} stroke="black" fill="transparent"/>)
             }
             {
                 this.state.drawings.map((line: Drawing) => line.getLines().map((x: ILine) =>
-                    <Path key={x.id} d={x.line} stroke="black" fill="transparent"/>))
+                    <Path key={x.id} d={x.line} stroke="black" fill="transparent" strokeWidth={4}/>))
             }
             {
                 this.state.texts.map((x: IText) => {
-                    return <Text fill="none" stroke="purple" fontSize="40" key={x.id}
-                                 fontWeight="bold" x={x.dimensions.left} y={x.dimensions.top} textAnchor="middle">{x.text}</Text>
+                    const posX = x.dimensions.left + (x.dimensions.right - x.dimensions.left) / 2;
+                    const posY = x.dimensions.top + (x.dimensions.bottom - x.dimensions.top) / 2;
+
+                    return <Text fontSize="40" key={x.id} x={posX} y={posY} textAnchor="middle">{x.text}</Text>
                 })
             }
+            <Path d={"M0 1, L" + 75 + ",1"} stroke="black" fill="transparent"/>
             <Path d={this.state.activeLine} stroke="black" fill="transparent"/>
-            <Path d={"M0 130, L" + width + ",130"} stroke="gray" fill="transparent"/>
-            <Path d={"M0 200, L" + width + ",200"} stroke="gray" fill="transparent"/>
-            <Path d={"M0 270, L" + width + ",270"} stroke="gray" fill="transparent"/>
+            <Path d={"M0 210, L" + this.state.width + ",210"} stroke="gray" fill="transparent"/>
+            <Path d={"M0 250, L" + this.state.width + ",250"} stroke="gray" fill="transparent"/>
+            <Path d={"M0 290, L" + this.state.width + ",290"} stroke="gray" fill="transparent"/>
         </Svg>
     }
 
@@ -76,6 +89,7 @@ export default class SvgPanel extends React.Component<{}, State> {
 }
 
 interface State {
+    width: number
     texts: IText[]
     lines: string[]
     drawings: Drawing[]

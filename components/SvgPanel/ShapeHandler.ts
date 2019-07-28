@@ -5,7 +5,7 @@ import Drawing from "../../services/Beans/Drawing";
 import Translator, {IText} from "./Translator";
 
 export default class ShapeHandler {
-    private defaultSpace = 20;
+    private defaultSpace = 75;
     private translator: Translator;
     private datastore = new Datastore();
     private activeShape: Shape | undefined;
@@ -27,6 +27,8 @@ export default class ShapeHandler {
         if (this.datastore.shapes.length > 0 && this.activeShape && this.checkIfNewShape(x, y, this.activeShape.getShape())) {
             console.log("New Shape, submit old");
             this.translator.submitShapes();
+        } else if (this.datastore.shapes.length > 0) {
+            this.translator.stopCountDown();
         }
 
         this.activeShape = new Shape(x, y, Utils.getUnusedId((id: number) => this.checkFound(id)));
@@ -34,7 +36,8 @@ export default class ShapeHandler {
 
     public async end() {
         this.datastore.addShape(this.activeShape!.getShape()!);
-        this.translator.startCountdown(this.datastore.shapes)
+        this.translator.startCountdown(this.datastore.shapes);
+        // setTimeout(() => this.translator.startCountdown(this.datastore.shapes), 100)
     }
 
     public getShapeLines(): string[] {
@@ -51,9 +54,6 @@ export default class ShapeHandler {
         const vertical = this.isVerticalOutside(box.top, box.bottom, y);
         const horizontal = this.isHorzontalOutside(box.left, box.right, x);
 
-        // console.log("[ShapeHandler] vertical outside", vertical)
-        // console.log("[ShapeHandler] horizontal outside",horizontal )
-
         return vertical || horizontal;
     }
 
@@ -67,7 +67,7 @@ export default class ShapeHandler {
     }
 
     private checkFound(id: number): boolean {
-        const activeFound = this.activeShape && this.activeShape.getId() === id;
+        const activeFound = this.activeShape && this.activeShape!.getId() === id;
 
         return this.datastore.foundShape(id) || (activeFound || false);
     }

@@ -1,11 +1,11 @@
-import Waiter from "../../services/Utils/Waiter";
-import {IShape} from "./ShapeHandler";
-import {ILine} from "../../services/Beans/Line";
-import Utils from "../../services/Utils/Utils";
-import Drawing from "../../services/Beans/Drawing";
 import API from "../../services/API";
-import Datastore from "../../services/Datastore";
+import {IShape} from "./ShapeHandler";
 import {ToastAndroid} from "react-native";
+import Utils from "../../services/Utils/Utils";
+import {ILine} from "../../services/Beans/Line";
+import Waiter from "../../services/Utils/Waiter";
+import Datastore from "../../services/Datastore";
+import Drawing from "../../services/Beans/Drawing";
 
 export default class Translator {
     private api: API;
@@ -30,11 +30,18 @@ export default class Translator {
         this.waiter.startCountDown();
     }
 
-    public submitShapes() {
-        const id = Utils.getUnusedId((id: number) => this.datastore.translationExists(id));
-        this.datastore.addShapeTranslation(id, this.shapes);
+    public stopCountDown() {
+        this.waiter.stopCountDown();
+    }
 
-        this.api.sendData(this.shapes, id);
+    public submitShapes() {
+        if (this.shapes.length > 0) {
+
+            const id = Utils.getUnusedId((id: number) => this.datastore.translationExists(id));
+            this.datastore.addShapeTranslation(id, this.shapes);
+
+            this.api.sendData(this.shapes, id);
+        }
     }
 
     private onResult(data: any) {
@@ -48,26 +55,35 @@ export default class Translator {
     }
 
     private onError(e: any) {
-        console.log(e);
+        console.log("ERROR: ", e);
 
-        ToastAndroid.show(e.error.message, ToastAndroid.SHORT);
+        if (e.error) {
+            ToastAndroid.show(e.error.message, ToastAndroid.SHORT);
+        }
     }
 
     private transformText(data: any): IText {
-        const foundIds = this.datastore.getAndDeleteTranslation(Math.min(...data.strokeIds));
 
-        const shape = this.shapes.filter((x: IShape) => x.id === foundIds[0])[0];
+        const foundIds = this.datastore.getAndDeleteTranslation(
+            Math.min(...data.strokeIds.map((id: number) => Math.floor(id / 100))));
+
+        const shape = this.shapes.filter((x: IShape) => foundIds.includes(x.id))[0];
+
+        if (!shape) {
+            console.log("found no ids:" + foundIds);
+            console.log("data: ", data)
+        }
 
         return {
-            dimensions: shape.dimensions,
+            dimensions: shape ? shape.dimensions : {top: 0, bottom: 0, left: 0, right: 0},
             text: data.recognizedText,
             id: Math.random(),
-            shapeId: shape.id
+            shapeId: shape ? shape.id : Math.random()
         }
     }
 
     private transformDrawing(data: any): Drawing {
-        const ids = this.datastore.getAndDeleteTranslation(Math.min(data.strokeIds));
+        const ids = this.datastore.getAndDeleteTranslation(Math.min(...data.strokeIds.map((id: number) => Math.floor(id / 100))));
 
         const drawing = new Drawing();
         this.shapes.filter((x: IShape) => ids.includes(x.id)).forEach((l: ILine) => drawing.addLine(l));

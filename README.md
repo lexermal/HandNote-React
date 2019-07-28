@@ -2,8 +2,6 @@
 
 ## Todo
 * texte auf richtiger linie platzieren
-* don't submit shapes when array is empty
-
 
 Schlüssel 1: 7f8cc438a1524b2f826b5e3fb9824633
 
